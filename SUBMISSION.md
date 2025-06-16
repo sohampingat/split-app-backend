@@ -1,7 +1,7 @@
 # 🧾 Split App Backend - Assignment Submission
 
 ## 🚀 **Deployed API**
-- **Live URL**: [Replace with your Railway URL]
+- **Live URL**: https://split-app-backend-production.up.railway.app
 - **Status**: ✅ Live and functional
 - **Database**: MongoDB Atlas (hosted)
 
