@@ -463,7 +463,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "https://your-deployed-api.railway.app",
+			"value": "https://split-app-backend-production.up.railway.app",
 			"description": "Base URL of your deployed API. Replace with actual deployment URL."
 		},
 		{
