@@ -21,22 +21,21 @@ A comprehensive backend system for managing group expenses and calculating settl
 ## 🛠️ Tech Stack
 
 - **Backend**: Node.js with Express.js
-- **Storage**: In-memory (for demo) - easily replaceable with MongoDB
-- **Deployment**: Railway/Render ready
+- **Database**: MongoDB Atlas (cloud-hosted)
+- **Deployment**: Railway (free hosting)
 - **Testing**: Postman collection provided
-- **Frontend**: Professional web interface with animations
 
 ## 📦 Installation & Setup
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB (local or Atlas)
+- MongoDB Atlas (cloud, free tier)
 
 ### Local Development Setup
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sohampingat/split-app-backend.git
    cd split-app-backend
    ```
 
@@ -49,9 +48,7 @@ A comprehensive backend system for managing group expenses and calculating settl
    Create a `.env` file in the root directory:
    ```env
    PORT=5000
-   MONGO_URI=mongodb://localhost:27017/splitapp
-   # Or use MongoDB Atlas:
-   # MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/splitapp
+   MONGO_URI=your-mongodb-atlas-connection-string
    ```
 
 4. **Start the development server**
@@ -60,6 +57,12 @@ A comprehensive backend system for managing group expenses and calculating settl
    ```
 
 The server will start on `http://localhost:5000`
+
+## 📋 Postman Collection
+
+- **Public Gist:** https://gist.github.com/sohampingat/586b2b4448d118534d90d55b3a68c276
+- **Base URL:** https://split-app-backend-production.up.railway.app
+- **How to use:** Import the collection into Postman and test all endpoints with pre-populated data (Shantanu, Sanket, Om).
 
 ## 🔧 API Endpoints
 
@@ -197,12 +200,6 @@ The API returns consistent error responses:
 - Calculating balances and settlements
 - Error handling for invalid inputs
 
-## 📋 Postman Collection
-
-- **Public Gist:** https://gist.github.com/sohampingat/586b2b4448d118534d90d55b3a68c276
-- **Base URL:** https://split-app-backend-production.up.railway.app
-- **How to use:** Import the collection into Postman and test all endpoints with pre-populated data.
-
 ## 🚀 Deployment
 
 ### Railway Deployment
@@ -244,6 +241,15 @@ The API returns consistent error responses:
 - [ ] User authentication
 - [ ] Group management
 - [ ] Mobile app integration
+
+## ⚠️ Known Limitations & Assumptions
+
+- No authentication or user accounts (all names are plain strings)
+- Names are case-sensitive ("Shantanu" ≠ "shantanu")
+- No group management (all expenses are in a single pool)
+- No recurring expenses or categories (see Future Enhancements)
+- No pagination or filtering on expense list
+- No frontend included in this submission (backend only)
 
 ## 🤝 Contributing
 
