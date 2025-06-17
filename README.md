@@ -21,9 +21,10 @@ A comprehensive backend system for managing group expenses and calculating settl
 ## 🛠️ Tech Stack
 
 - **Backend**: Node.js with Express.js
-- **Database**: MongoDB with Mongoose ODM
+- **Storage**: In-memory (for demo) - easily replaceable with MongoDB
 - **Deployment**: Railway/Render ready
 - **Testing**: Postman collection provided
+- **Frontend**: Professional web interface with animations
 
 ## 📦 Installation & Setup
 

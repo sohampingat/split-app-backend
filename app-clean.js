@@ -5,14 +5,16 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
 
-// Import routes (only working ones for now)
-const expenseRoutes = require("./routes/expenseRoutes");
-const settlementRoutes = require("./routes/settlementRoutes");
+// Import routes
+const expenseRoutes = require("./routes/expenseRoutesClean");
+const settlementRoutes = require("./routes/settlementRoutesClean");
 
 const app = express();
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable for development
+}));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -25,14 +27,11 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.com'] 
-    : ['http://localhost:3000', 'http://localhost:3001'],
+// CORS
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "*",
   credentials: true
-};
-app.use(cors(corsOptions));
+}));
 
 // Logging
 if (process.env.NODE_ENV !== 'production') {
@@ -63,30 +62,45 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use("/api/expenses", expenseRoutes);
-app.use("/api/settlements", settlementRoutes);
+app.use("/api", settlementRoutes);
 
 // Legacy routes (for backward compatibility)
 app.use("/expenses", expenseRoutes);
 app.use("/", settlementRoutes);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    message: "Route not found",
-    path: req.originalUrl,
-    method: req.method
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      errors: Object.values(err.errors).map(e => e.message)
+    });
+  }
+  
+  if (err.name === 'CastError') {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid ID format'
+    });
+  }
+  
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? err.stack : undefined
   });
 });
 
-// Error handling middleware
-app.use((error, req, res, next) => {
-  console.error('Error:', error);
-  
-  res.status(error.status || 500).json({
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
     success: false,
-    message: error.message || 'Internal Server Error',
-    ...(process.env.NODE_ENV !== 'production' && { stack: error.stack })
+    message: 'Route not found',
+    path: req.originalUrl,
+    method: req.method
   });
 });
 

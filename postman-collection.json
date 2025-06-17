@@ -1,0 +1,1233 @@
+{
+	"info": {
+		"_postman_id": "splitwise-pro-collection",
+		"name": "SplitWise Pro - Expense Splitting APIs",
+		"description": "Complete API collection for DevDynamics Backend Assignment - Advanced expense splitting system with payment tracking and multiple split methods.\n\n🚀 **Features Tested:**\n- Expense Management (Add, Edit, Delete)\n- Multiple Split Types (Equal, Percentage, Exact)\n- Settlement Calculations\n- Payment Tracking\n- Edge Cases & Validation\n\n📋 **Pre-populated Test Data:**\n- People: Shantanu, Sanket, Om\n- Various expense scenarios\n- Sample payments and settlements\n\n🌐 **Deployed API**: https://your-app.railway.app\n📱 **Web Interface**: https://your-app.railway.app/professional.html",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "📁 Health Check",
+			"item": [
+				{
+					"name": "API Health Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						},
+						"description": "Check if the API is running and healthy"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Expense Management",
+			"item": [
+				{
+					"name": "Get All Expenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Retrieve all expenses with their split details"
+					}
+				},
+				{
+					"name": "Add Expense - Equal Split (Dinner)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 600,\n  \"description\": \"Dinner at Italian Restaurant\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Food\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add expense with equal split among 3 people (₹200 each)"
+					}
+				},
+				{
+					"name": "Add Expense - Percentage Split (Business Dinner)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1000,\n  \"description\": \"Business Dinner - Different contributions\",\n  \"paid_by\": \"Shantanu\",\n  \"split_type\": \"percentage\",\n  \"split_details\": {\n    \"Shantanu\": 40,\n    \"Sanket\": 35,\n    \"Om\": 25\n  },\n  \"category\": \"Food\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add expense with percentage split (40%, 35%, 25%)"
+					}
+				},
+				{
+					"name": "Add Expense - Exact Amount Split (Groceries)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 750,\n  \"description\": \"Grocery Shopping - Exact shares\",\n  \"paid_by\": \"Sanket\",\n  \"split_type\": \"exact\",\n  \"split_details\": {\n    \"Sanket\": 300,\n    \"Shantanu\": 250,\n    \"Om\": 200\n  },\n  \"category\": \"Shopping\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add expense with exact amount split (₹300, ₹250, ₹200)"
+					}
+				},
+				{
+					"name": "Add Expense - Movie Tickets",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 500,\n  \"description\": \"Movie Tickets - Avengers\",\n  \"paid_by\": \"Om\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Entertainment\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add movie ticket expense split equally"
+					}
+				},
+				{
+					"name": "Add Expense - Uber Ride",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 280,\n  \"description\": \"Uber ride to airport\",\n  \"paid_by\": \"Sanket\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"],\n  \"category\": \"Transport\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add transport expense split between 2 people"
+					}
+				},
+				{
+					"name": "Update Expense - Change Amount",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 650,\n  \"description\": \"Dinner at Italian Restaurant (Updated)\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Food\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "1"]
+						},
+						"description": "Update existing expense - change amount from ₹600 to ₹650"
+					}
+				},
+				{
+					"name": "Delete Expense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/expenses/5",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "5"]
+						},
+						"description": "Delete an expense by ID"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Settlements & People",
+			"item": [
+				{
+					"name": "Get All People",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/people",
+							"host": ["{{baseUrl}}"],
+							"path": ["people"]
+						},
+						"description": "Get list of all people involved in expenses"
+					}
+				},
+				{
+					"name": "Get Current Balances",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/balances",
+							"host": ["{{baseUrl}}"],
+							"path": ["balances"]
+						},
+						"description": "Get current balance for each person (how much they owe or are owed)"
+					}
+				},
+				{
+					"name": "Get Settlement Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/settlements",
+							"host": ["{{baseUrl}}"],
+							"path": ["settlements"]
+						},
+						"description": "Get optimized settlement recommendations (who should pay whom)"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Payment Tracking",
+			"item": [
+				{
+					"name": "Get All Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Get history of all completed payments"
+					}
+				},
+				{
+					"name": "Record Payment - Cash Settlement",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Sanket\",\n  \"to\": \"Shantanu\",\n  \"amount\": 166.67,\n  \"description\": \"Cash payment for dinner bills\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Record a payment made outside the app (cash, UPI, etc.)"
+					}
+				},
+				{
+					"name": "Record Payment - UPI Transfer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Om\",\n  \"to\": \"Shantanu\",\n  \"amount\": 316.67,\n  \"description\": \"UPI payment for movie and dinner share\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Record another payment to test balance updates"
+					}
+				},
+				{
+					"name": "Delete Payment (Undo)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/payments/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments", "1"]
+						},
+						"description": "Undo a payment (in case of error or dispute)"
+					}
+				},
+				{
+					"name": "Quick Settle - Mark Settlement as Paid",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Quick settlement via app button\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/settlements/settlement_Om_Shantanu/pay",
+							"host": ["{{baseUrl}}"],
+							"path": ["settlements", "settlement_Om_Shantanu", "pay"]
+						},
+						"description": "Quick way to mark a specific settlement as paid"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Edge Cases & Validation",
+			"item": [
+				{
+					"name": "❌ Add Expense - Negative Amount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": -100,\n  \"description\": \"Invalid negative expense\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - negative amounts not allowed"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Empty Description",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 100,\n  \"description\": \"\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - description is required"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Missing Paid By",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 100,\n  \"description\": \"Test expense\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - paid_by is required"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Invalid Percentage Total",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1000,\n  \"description\": \"Invalid percentage split\",\n  \"paid_by\": \"Shantanu\",\n  \"split_type\": \"percentage\",\n  \"split_details\": {\n    \"Shantanu\": 50,\n    \"Sanket\": 30,\n    \"Om\": 15\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - percentages must add up to 100%"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Invalid Exact Amount Total",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1000,\n  \"description\": \"Invalid exact amount split\",\n  \"paid_by\": \"Shantanu\",\n  \"split_type\": \"exact\",\n  \"split_details\": {\n    \"Shantanu\": 400,\n    \"Sanket\": 300,\n    \"Om\": 200\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - exact amounts must add up to total"
+					}
+				},
+				{
+					"name": "❌ Update Non-existent Expense",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 500,\n  \"description\": \"Non-existent expense\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses/999",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "999"]
+						},
+						"description": "Should return 404 error - expense not found"
+					}
+				},
+				{
+					"name": "❌ Delete Non-existent Expense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/expenses/999",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "999"]
+						},
+						"description": "Should return 404 error - expense not found"
+					}
+				},
+				{
+					"name": "❌ Invalid Payment - Negative Amount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Sanket\",\n  \"to\": \"Shantanu\",\n  \"amount\": -100,\n  \"description\": \"Invalid negative payment\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Should return 400 error - negative payment amounts not allowed"
+					}
+				},
+				{
+					"name": "❌ Invalid Payment - Self Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Shantanu\",\n  \"to\": \"Shantanu\",\n  \"amount\": 100,\n  \"description\": \"Cannot pay yourself\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Should return 400 error - cannot pay yourself"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Demo Scenarios",
+			"item": [
+				{
+					"name": "🎬 Scenario 1: Weekend Trip",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 2400,\n  \"description\": \"Hotel booking for weekend trip\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Travel\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Large expense - hotel booking split equally"
+					}
+				},
+				{
+					"name": "🎬 Scenario 2: Fuel for Trip",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 800,\n  \"description\": \"Petrol for weekend trip\",\n  \"paid_by\": \"Sanket\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Transport\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Travel expense - fuel cost"
+					}
+				},
+				{
+					"name": "🎬 Check Trip Settlements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/settlements",
+							"host": ["{{baseUrl}}"],
+							"path": ["settlements"]
+						},
+						"description": "See how the trip expenses affect overall balances"
+					}
+				},
+				{
+					"name": "🎬 Scenario 3: Settle Trip Debts",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Om\",\n  \"to\": \"Shantanu\",\n  \"amount\": 533.33,\n  \"description\": \"Trip settlement - hotel and fuel share\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Record payment to settle trip expenses"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://your-app.railway.app",
+			"description": "Base URL for the deployed API - replace with your actual deployment URL"
+		}
+	]
+}{
+	"info": {
+		"_postman_id": "splitwise-pro-collection",
+		"name": "SplitWise Pro - Expense Splitting APIs",
+		"description": "Complete API collection for DevDynamics Backend Assignment - Advanced expense splitting system with payment tracking and multiple split methods.\n\n🚀 **Features Tested:**\n- Expense Management (Add, Edit, Delete)\n- Multiple Split Types (Equal, Percentage, Exact)\n- Settlement Calculations\n- Payment Tracking\n- Edge Cases & Validation\n\n📋 **Pre-populated Test Data:**\n- People: Shantanu, Sanket, Om\n- Various expense scenarios\n- Sample payments and settlements\n\n🌐 **Deployed API**: https://your-app.railway.app\n📱 **Web Interface**: https://your-app.railway.app/professional.html",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "📁 Health Check",
+			"item": [
+				{
+					"name": "API Health Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						},
+						"description": "Check if the API is running and healthy"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Expense Management",
+			"item": [
+				{
+					"name": "Get All Expenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Retrieve all expenses with their split details"
+					}
+				},
+				{
+					"name": "Add Expense - Equal Split (Dinner)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 600,\n  \"description\": \"Dinner at Italian Restaurant\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Food\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add expense with equal split among 3 people (₹200 each)"
+					}
+				},
+				{
+					"name": "Add Expense - Percentage Split (Business Dinner)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1000,\n  \"description\": \"Business Dinner - Different contributions\",\n  \"paid_by\": \"Shantanu\",\n  \"split_type\": \"percentage\",\n  \"split_details\": {\n    \"Shantanu\": 40,\n    \"Sanket\": 35,\n    \"Om\": 25\n  },\n  \"category\": \"Food\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add expense with percentage split (40%, 35%, 25%)"
+					}
+				},
+				{
+					"name": "Add Expense - Exact Amount Split (Groceries)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 750,\n  \"description\": \"Grocery Shopping - Exact shares\",\n  \"paid_by\": \"Sanket\",\n  \"split_type\": \"exact\",\n  \"split_details\": {\n    \"Sanket\": 300,\n    \"Shantanu\": 250,\n    \"Om\": 200\n  },\n  \"category\": \"Shopping\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add expense with exact amount split (₹300, ₹250, ₹200)"
+					}
+				},
+				{
+					"name": "Add Expense - Movie Tickets",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 500,\n  \"description\": \"Movie Tickets - Avengers\",\n  \"paid_by\": \"Om\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Entertainment\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add movie ticket expense split equally"
+					}
+				},
+				{
+					"name": "Add Expense - Uber Ride",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 280,\n  \"description\": \"Uber ride to airport\",\n  \"paid_by\": \"Sanket\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"],\n  \"category\": \"Transport\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Add transport expense split between 2 people"
+					}
+				},
+				{
+					"name": "Update Expense - Change Amount",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 650,\n  \"description\": \"Dinner at Italian Restaurant (Updated)\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Food\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "1"]
+						},
+						"description": "Update existing expense - change amount from ₹600 to ₹650"
+					}
+				},
+				{
+					"name": "Delete Expense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/expenses/5",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "5"]
+						},
+						"description": "Delete an expense by ID"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Settlements & People",
+			"item": [
+				{
+					"name": "Get All People",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/people",
+							"host": ["{{baseUrl}}"],
+							"path": ["people"]
+						},
+						"description": "Get list of all people involved in expenses"
+					}
+				},
+				{
+					"name": "Get Current Balances",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/balances",
+							"host": ["{{baseUrl}}"],
+							"path": ["balances"]
+						},
+						"description": "Get current balance for each person (how much they owe or are owed)"
+					}
+				},
+				{
+					"name": "Get Settlement Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/settlements",
+							"host": ["{{baseUrl}}"],
+							"path": ["settlements"]
+						},
+						"description": "Get optimized settlement recommendations (who should pay whom)"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Payment Tracking",
+			"item": [
+				{
+					"name": "Get All Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Get history of all completed payments"
+					}
+				},
+				{
+					"name": "Record Payment - Cash Settlement",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Sanket\",\n  \"to\": \"Shantanu\",\n  \"amount\": 166.67,\n  \"description\": \"Cash payment for dinner bills\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Record a payment made outside the app (cash, UPI, etc.)"
+					}
+				},
+				{
+					"name": "Record Payment - UPI Transfer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Om\",\n  \"to\": \"Shantanu\",\n  \"amount\": 316.67,\n  \"description\": \"UPI payment for movie and dinner share\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Record another payment to test balance updates"
+					}
+				},
+				{
+					"name": "Delete Payment (Undo)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/payments/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments", "1"]
+						},
+						"description": "Undo a payment (in case of error or dispute)"
+					}
+				},
+				{
+					"name": "Quick Settle - Mark Settlement as Paid",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Quick settlement via app button\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/settlements/settlement_Om_Shantanu/pay",
+							"host": ["{{baseUrl}}"],
+							"path": ["settlements", "settlement_Om_Shantanu", "pay"]
+						},
+						"description": "Quick way to mark a specific settlement as paid"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Edge Cases & Validation",
+			"item": [
+				{
+					"name": "❌ Add Expense - Negative Amount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": -100,\n  \"description\": \"Invalid negative expense\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - negative amounts not allowed"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Empty Description",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 100,\n  \"description\": \"\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - description is required"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Missing Paid By",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 100,\n  \"description\": \"Test expense\",\n  \"split_among\": [\"Shantanu\", \"Sanket\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - paid_by is required"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Invalid Percentage Total",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1000,\n  \"description\": \"Invalid percentage split\",\n  \"paid_by\": \"Shantanu\",\n  \"split_type\": \"percentage\",\n  \"split_details\": {\n    \"Shantanu\": 50,\n    \"Sanket\": 30,\n    \"Om\": 15\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - percentages must add up to 100%"
+					}
+				},
+				{
+					"name": "❌ Add Expense - Invalid Exact Amount Total",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1000,\n  \"description\": \"Invalid exact amount split\",\n  \"paid_by\": \"Shantanu\",\n  \"split_type\": \"exact\",\n  \"split_details\": {\n    \"Shantanu\": 400,\n    \"Sanket\": 300,\n    \"Om\": 200\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Should return 400 error - exact amounts must add up to total"
+					}
+				},
+				{
+					"name": "❌ Update Non-existent Expense",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 500,\n  \"description\": \"Non-existent expense\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses/999",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "999"]
+						},
+						"description": "Should return 404 error - expense not found"
+					}
+				},
+				{
+					"name": "❌ Delete Non-existent Expense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/expenses/999",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses", "999"]
+						},
+						"description": "Should return 404 error - expense not found"
+					}
+				},
+				{
+					"name": "❌ Invalid Payment - Negative Amount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Sanket\",\n  \"to\": \"Shantanu\",\n  \"amount\": -100,\n  \"description\": \"Invalid negative payment\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Should return 400 error - negative payment amounts not allowed"
+					}
+				},
+				{
+					"name": "❌ Invalid Payment - Self Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Shantanu\",\n  \"to\": \"Shantanu\",\n  \"amount\": 100,\n  \"description\": \"Cannot pay yourself\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Should return 400 error - cannot pay yourself"
+					}
+				}
+			]
+		},
+		{
+			"name": "📁 Demo Scenarios",
+			"item": [
+				{
+					"name": "🎬 Scenario 1: Weekend Trip",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 2400,\n  \"description\": \"Hotel booking for weekend trip\",\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Travel\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Large expense - hotel booking split equally"
+					}
+				},
+				{
+					"name": "🎬 Scenario 2: Fuel for Trip",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 800,\n  \"description\": \"Petrol for weekend trip\",\n  \"paid_by\": \"Sanket\",\n  \"split_among\": [\"Shantanu\", \"Sanket\", \"Om\"],\n  \"category\": \"Transport\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						},
+						"description": "Travel expense - fuel cost"
+					}
+				},
+				{
+					"name": "🎬 Check Trip Settlements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/settlements",
+							"host": ["{{baseUrl}}"],
+							"path": ["settlements"]
+						},
+						"description": "See how the trip expenses affect overall balances"
+					}
+				},
+				{
+					"name": "🎬 Scenario 3: Settle Trip Debts",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Om\",\n  \"to\": \"Shantanu\",\n  \"amount\": 533.33,\n  \"description\": \"Trip settlement - hotel and fuel share\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["payments"]
+						},
+						"description": "Record payment to settle trip expenses"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://your-app.railway.app",
+			"description": "Base URL for the deployed API - replace with your actual deployment URL"
+		}
+	]
+}
