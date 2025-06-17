@@ -6,7 +6,7 @@
 - **Database**: MongoDB Atlas (hosted)
 
 ## 📋 **Postman Collection**
-- **GitHub Gist**: [Replace with your Gist URL]
+- **GitHub Gist**: https://gist.github.com/sohampingat/586b2b4448d118534d90d55b3a68c276
 - **Collection Name**: Split App Backend - Expense Splitter APIs
 - **Test Data**: Pre-populated with Shantanu, Sanket, Om scenarios
 - **Status**: ✅ All endpoints tested and working

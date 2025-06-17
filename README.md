@@ -197,6 +197,12 @@ The API returns consistent error responses:
 - Calculating balances and settlements
 - Error handling for invalid inputs
 
+## 📋 Postman Collection
+
+- **Public Gist:** https://gist.github.com/sohampingat/586b2b4448d118534d90d55b3a68c276
+- **Base URL:** https://split-app-backend-production.up.railway.app
+- **How to use:** Import the collection into Postman and test all endpoints with pre-populated data.
+
 ## 🚀 Deployment
 
 ### Railway Deployment
