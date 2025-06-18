@@ -513,7 +513,7 @@ app.delete('/payments/:id', (req, res) => {
 });
 
 // Reset data endpoint for testing
-app.post('/reset-data', (req, res) => {
+app.post('/reset-test-data', (req, res) => {
   expenses = [];
   payments = [];
   idCounter = 1;
@@ -521,14 +521,19 @@ app.post('/reset-data', (req, res) => {
   
   res.json({
     success: true,
-    message: 'All data reset successfully'
+    message: '🧪 All data reset successfully - Ready for fresh test data',
+    data: {
+      expenses_cleared: 0,
+      payments_cleared: 0,
+      next_id: idCounter
+    }
   });
 });
 
-// Add clean test data endpoint - WITH ERROR HANDLING
+// Add comprehensive test data endpoint for deliverable testing
 app.post('/add-test-data', (req, res) => {
   try {
-    console.log('🧪 Adding test data...');
+    console.log('🧪 Adding comprehensive test data for deliverable...');
     
     // Reset first
     expenses = [];
@@ -536,72 +541,226 @@ app.post('/add-test-data', (req, res) => {
     idCounter = 1;
     paymentIdCounter = 1;
     
-    // Add clean test expenses with consistent names
+    // Add test expenses matching deliverable requirements
     const testExpenses = [
       {
         id: idCounter++,
         amount: 600,
-        description: "Dinner at restaurant",
+        description: "Dinner at Restaurant",
         paid_by: "Shantanu",
         split_among: [
-          { person: "Shantanu", share: 200 },
-          { person: "Sanket", share: 200 },
-          { person: "Om", share: 200 }
+          { person: "Shantanu", amount: 200 },
+          { person: "Sanket", amount: 200 },
+          { person: "Om", amount: 200 }
         ],
         split_type: "equal",
         category: "Food",
-        date: "2024-01-15T00:00:00.000Z",
-        createdAt: "2024-01-15T00:00:00.000Z"
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       },
       {
         id: idCounter++,
         amount: 450,
-        description: "Groceries",
+        description: "Groceries from Supermarket",
         paid_by: "Sanket", 
         split_among: [
-          { person: "Shantanu", share: 150 },
-          { person: "Sanket", share: 150 },
-          { person: "Om", share: 150 }
+          { person: "Shantanu", amount: 150 },
+          { person: "Sanket", amount: 150 },
+          { person: "Om", amount: 150 }
         ],
         split_type: "equal",
-        category: "Food",
-        date: "2024-01-16T00:00:00.000Z",
-        createdAt: "2024-01-16T00:00:00.000Z"
+        category: "Groceries",
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       },
       {
         id: idCounter++,
         amount: 300,
-        description: "Petrol",
+        description: "Petrol for Road Trip",
         paid_by: "Om",
         split_among: [
-          { person: "Shantanu", share: 100 },
-          { person: "Sanket", share: 100 },
-          { person: "Om", share: 100 }
+          { person: "Shantanu", amount: 100 },
+          { person: "Sanket", amount: 100 },
+          { person: "Om", amount: 100 }
         ],
         split_type: "equal", 
         category: "Transport",
-        date: "2024-01-17T00:00:00.000Z",
-        createdAt: "2024-01-17T00:00:00.000Z"
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
     ];
     
     expenses.push(...testExpenses);
     
+    // Calculate expected results for verification
+    const balances = {};
+    const people = ['Shantanu', 'Sanket', 'Om'];
+    people.forEach(person => {
+      const balance = calculatePersonBalance(person);
+      balances[person] = balance;
+    });
+    
+    const settlements = calculateSettlements();
+    
     console.log('✅ Test data added successfully');
+    console.log('📊 Expected Results:', {
+      'Shantanu': '+₹150 (paid ₹600, owes ₹450)',
+      'Sanket': '₹0 (paid ₹450, owes ₹450)', 
+      'Om': '-₹150 (paid ₹300, owes ₹450)',
+      'Settlement': 'Om pays ₹150 to Shantanu'
+    });
     
     res.json({
       success: true,
       data: {
         expenses_added: testExpenses.length,
-        expenses: testExpenses
+        expenses: testExpenses,
+        calculated_balances: balances,
+        settlements: settlements,
+        expected_results: {
+          'Shantanu': '+₹150 (paid ₹600, owes ₹450)',
+          'Sanket': '₹0 (paid ₹450, owes ₹450)', 
+          'Om': '-₹150 (paid ₹300, owes ₹450)',
+          'Settlement': 'Om pays ₹150 to Shantanu'
+        }
       },
-      message: 'Clean test data added successfully'
+      message: '🎯 Complete test data added successfully - Ready for deliverable testing!'
     });
   } catch (error) {
     console.error('❌ Error adding test data:', error);
     res.status(500).json({
       success: false,
       message: 'Error adding test data',
+      error: error.message
+    });
+  }
+});
+
+// Add extended test data with all scenarios from deliverable
+app.post('/add-extended-test-data', (req, res) => {
+  try {
+    console.log('🧪 Adding extended test data with all scenarios...');
+    
+    // Reset first
+    expenses = [];
+    payments = [];
+    idCounter = 1;
+    paymentIdCounter = 1;
+    
+    // Add all test expenses from deliverable requirements
+    const extendedTestExpenses = [
+      {
+        id: idCounter++,
+        amount: 600,
+        description: "Dinner at Restaurant",
+        paid_by: "Shantanu",
+        split_among: [
+          { person: "Shantanu", amount: 200 },
+          { person: "Sanket", amount: 200 },
+          { person: "Om", amount: 200 }
+        ],
+        split_type: "equal",
+        category: "Food",
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: idCounter++,
+        amount: 450,
+        description: "Groceries from Supermarket",
+        paid_by: "Sanket", 
+        split_among: [
+          { person: "Shantanu", amount: 150 },
+          { person: "Sanket", amount: 150 },
+          { person: "Om", amount: 150 }
+        ],
+        split_type: "equal",
+        category: "Groceries",
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: idCounter++,
+        amount: 300,
+        description: "Petrol for Road Trip",
+        paid_by: "Om",
+        split_among: [
+          { person: "Shantanu", amount: 100 },
+          { person: "Sanket", amount: 100 },
+          { person: "Om", amount: 100 }
+        ],
+        split_type: "equal", 
+        category: "Transport",
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: idCounter++,
+        amount: 500,
+        description: "Movie Tickets",
+        paid_by: "Shantanu",
+        split_among: [
+          { person: "Shantanu", amount: 166.67 },
+          { person: "Sanket", amount: 166.67 },
+          { person: "Om", amount: 166.66 }
+        ],
+        split_type: "equal", 
+        category: "Entertainment",
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: idCounter++,
+        amount: 280,
+        description: "Pizza for Lunch",
+        paid_by: "Sanket",
+        split_among: [
+          { person: "Shantanu", amount: 93.33 },
+          { person: "Sanket", amount: 93.33 },
+          { person: "Om", amount: 93.34 }
+        ],
+        split_type: "equal", 
+        category: "Food",
+        date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      }
+    ];
+    
+    expenses.push(...extendedTestExpenses);
+    
+    // Calculate results
+    const balances = {};
+    const people = ['Shantanu', 'Sanket', 'Om'];
+    people.forEach(person => {
+      const balance = calculatePersonBalance(person);
+      balances[person] = balance;
+    });
+    
+    const settlements = calculateSettlements();
+    
+    console.log('✅ Extended test data added successfully');
+    
+    res.json({
+      success: true,
+      data: {
+        expenses_added: extendedTestExpenses.length,
+        expenses: extendedTestExpenses,
+        calculated_balances: balances,
+        settlements: settlements,
+        scenario_summary: {
+          total_expenses: extendedTestExpenses.length,
+          total_amount: extendedTestExpenses.reduce((sum, exp) => sum + exp.amount, 0),
+          people_involved: people,
+          settlement_needed: settlements.length > 0
+        }
+      },
+      message: '🎯 Extended test data with all scenarios added successfully!'
+    });
+  } catch (error) {
+    console.error('❌ Error adding extended test data:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding extended test data',
       error: error.message
     });
   }

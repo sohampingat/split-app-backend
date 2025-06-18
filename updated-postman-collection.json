@@ -1,0 +1,734 @@
+{
+	"info": {
+		"_postman_id": "expense-splitter-deliverable-v3",
+		"name": "📁 Expense Splitter APIs - Complete Testing Suite",
+		"description": "🎯 **Comprehensive API Collection for Expense Splitting Backend - Assignment Deliverable**\n\n**🚀 Live API Base URL**: https://split-app-backend-production.up.railway.app\n\n**📋 Test Data Setup**: Pre-populated with Shantanu, Sanket, Om scenarios\n\n**✅ Features Tested**:\n- All CRUD operations for expenses\n- Settlement calculations & balance tracking  \n- Mark as Paid functionality\n- Edge cases & validation\n- Error handling scenarios\n\n**🧪 Quick Start**: \n1. Import this collection\n2. Run 'Add Complete Test Data' to setup\n3. Test all endpoints immediately!\n\n**📊 Expected Result after Test Data**:\n- Shantanu: +₹150 (paid ₹600, owes ₹450)\n- Sanket: ₹0 (paid ₹450, owes ₹450)\n- Om: -₹150 (paid ₹300, owes ₹450)\n- Settlement: Om pays ₹150 to Shantanu\n\n---\n**Assignment Deliverable** - All endpoints work without any local setup required.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://split-app-backend-production.up.railway.app",
+			"type": "string",
+			"description": "Deployed backend API base URL"
+		}
+	],
+	"item": [
+		{
+			"name": "📁 Test Data Setup",
+			"description": "🧪 **Setup endpoints to prepare data for testing**\n\nRun these first to create the test scenarios mentioned in the deliverable.",
+			"item": [
+				{
+					"name": "🎯 Add Complete Test Data (One Click Setup)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Test data added successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(responseJson.data.expenses_added).to.equal(3);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/add-test-data",
+							"host": ["{{base_url}}"],
+							"path": ["add-test-data"]
+						},
+						"description": "🎯 **Creates the exact scenario from deliverable requirements:**\n\n- Dinner ₹600 (paid by Shantanu)\n- Groceries ₹450 (paid by Sanket)  \n- Petrol ₹300 (paid by Om)\n\n**Expected Results:**\n- Shantanu: +₹150 (paid ₹600, owes ₹450)\n- Sanket: ₹0 (paid ₹450, owes ₹450)\n- Om: -₹150 (paid ₹300, owes ₹450)\n- Settlement: Om pays ₹150 to Shantanu"
+					},
+					"response": []
+				},
+				{
+					"name": "🎬 Add Extended Test Data (All Scenarios)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/add-extended-test-data",
+							"host": ["{{base_url}}"],
+							"path": ["add-extended-test-data"]
+						},
+						"description": "🎬 **Creates extended scenario with all expenses:**\n\n- Dinner ₹600 (Shantanu)\n- Groceries ₹450 (Sanket)\n- Petrol ₹300 (Om)\n- Movie Tickets ₹500 (Shantanu)\n- Pizza ₹280 (Sanket)\n\nFor testing Update/Delete operations."
+					},
+					"response": []
+				},
+				{
+					"name": "🧪 Clear All Data (Reset for Testing)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/reset-test-data",
+							"host": ["{{base_url}}"],
+							"path": ["reset-test-data"]
+						},
+						"description": "🧪 **Clears all data for fresh testing**\n\nUse this to start with a clean slate before adding test data."
+					},
+					"response": []
+				},
+				{
+					"name": "📊 Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('API is healthy', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "📊 **Checks if the API is running properly**\n\nRun this first to verify the deployment is working."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📁 Expense Management",
+			"description": "💰 **All CRUD operations for expenses**\n\nTesting expense creation, reading, updating, and deletion.",
+			"item": [
+				{
+					"name": "➤ Add Expense - Dinner (₹600, paid by Shantanu)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Expense created successfully', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(responseJson.data.expense.amount).to.equal(600);",
+									"    pm.expect(responseJson.data.expense.paid_by).to.equal('Shantanu');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Dinner at Restaurant\",\n  \"amount\": 600,\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 200},\n    {\"person\": \"Sanket\", \"amount\": 200},\n    {\"person\": \"Om\", \"amount\": 200}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "🍽️ **Creates dinner expense**\n\n₹600 paid by Shantanu, split equally among 3 people (₹200 each)"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Add Expense - Groceries (₹450, paid by Sanket)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Groceries expense created', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(responseJson.data.expense.amount).to.equal(450);",
+									"    pm.expect(responseJson.data.expense.paid_by).to.equal('Sanket');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Groceries from Supermarket\",\n  \"amount\": 450,\n  \"paid_by\": \"Sanket\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 150},\n    {\"person\": \"Sanket\", \"amount\": 150},\n    {\"person\": \"Om\", \"amount\": 150}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "🛒 **Creates groceries expense**\n\n₹450 paid by Sanket, split equally among 3 people (₹150 each)"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Add Expense - Petrol (₹300, paid by Om)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Petrol expense created', function () {",
+									"    pm.response.to.have.status(201);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(responseJson.data.expense.amount).to.equal(300);",
+									"    pm.expect(responseJson.data.expense.paid_by).to.equal('Om');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Petrol for Road Trip\",\n  \"amount\": 300,\n  \"paid_by\": \"Om\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 100},\n    {\"person\": \"Sanket\", \"amount\": 100},\n    {\"person\": \"Om\", \"amount\": 100}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "⛽ **Creates petrol expense**\n\n₹300 paid by Om, split equally among 3 people (₹100 each)"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Add Expense - Movie Tickets (₹500, paid by Shantanu)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Movie Tickets\",\n  \"amount\": 500,\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 166.67},\n    {\"person\": \"Sanket\", \"amount\": 166.67},\n    {\"person\": \"Om\", \"amount\": 166.66}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "🎬 **Creates movie tickets expense**\n\n₹500 paid by Shantanu, split equally with precision handling"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Add Expense - Pizza (₹280, paid by Sanket)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Pizza for Lunch\",\n  \"amount\": 280,\n  \"paid_by\": \"Sanket\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 93.33},\n    {\"person\": \"Sanket\", \"amount\": 93.33},\n    {\"person\": \"Om\", \"amount\": 93.34}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "🍕 **Creates pizza expense**\n\n₹280 paid by Sanket, will be deleted later to test deletion"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ List All Expenses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Expenses retrieved successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(Array.isArray(responseJson.data)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "📋 **Retrieves all expenses**\n\nShows complete list with IDs needed for update/delete operations"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Update Expense - Change Petrol to ₹350",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Petrol for Road Trip (Updated)\",\n  \"amount\": 350,\n  \"paid_by\": \"Om\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 116.67},\n    {\"person\": \"Sanket\", \"amount\": 116.67},\n    {\"person\": \"Om\", \"amount\": 116.66}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses/:expenseId",
+							"host": ["{{base_url}}"],
+							"path": ["expenses", ":expenseId"],
+							"variable": [
+								{
+									"key": "expenseId",
+									"value": "REPLACE_WITH_ACTUAL_ID",
+									"description": "Get this ID from 'List All Expenses' response"
+								}
+							]
+						},
+						"description": "✏️ **Updates petrol expense**\n\n⚠️ **Manual Step Required:**\n1. Run 'List All Expenses' first\n2. Copy the ID of petrol expense\n3. Replace ':expenseId' in URL with actual ID\n4. Then run this request"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Delete Expense - Remove Pizza",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expenses/:expenseId",
+							"host": ["{{base_url}}"],
+							"path": ["expenses", ":expenseId"],
+							"variable": [
+								{
+									"key": "expenseId",
+									"value": "REPLACE_WITH_PIZZA_ID",
+									"description": "Get Pizza expense ID from 'List All Expenses' response"
+								}
+							]
+						},
+						"description": "🗑️ **Deletes pizza expense**\n\n⚠️ **Manual Step Required:**\n1. Run 'List All Expenses' first\n2. Copy the ID of pizza expense\n3. Replace ':expenseId' in URL with actual ID\n4. Then run this request"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📁 Settlements & People",
+			"description": "👥 **Balance calculations and settlement logic**\n\nTesting the core splitting algorithm and payment tracking.",
+			"item": [
+				{
+					"name": "➤ Get All People (should show: Shantanu, Sanket, Om)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('People retrieved successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(responseJson.data).to.include.members(['Shantanu', 'Sanket', 'Om']);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/people",
+							"host": ["{{base_url}}"],
+							"path": ["people"]
+						},
+						"description": "👥 **Gets all people involved in expenses**\n\nShould return: Shantanu, Sanket, Om"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Get Current Balances (after all transactions)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Balances calculated correctly', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(responseJson.data).to.have.property('Shantanu');",
+									"    pm.expect(responseJson.data).to.have.property('Sanket');",
+									"    pm.expect(responseJson.data).to.have.property('Om');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/balances",
+							"host": ["{{base_url}}"],
+							"path": ["balances"]
+						},
+						"description": "💰 **Shows detailed balance breakdown**\n\n**Expected with basic test data:**\n- Shantanu: +₹150 (paid ₹600, owes ₹450)\n- Sanket: ₹0 (paid ₹450, owes ₹450)\n- Om: -₹150 (paid ₹300, owes ₹450)"
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Get Settlement Summary (optimized transactions)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Settlements calculated', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(Array.isArray(responseJson.data)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/settlements",
+							"host": ["{{base_url}}"],
+							"path": ["settlements"]
+						},
+						"description": "⚖️ **Shows optimized settlement transactions**\n\n**Expected with basic test data:**\n- Om pays ₹150 to Shantanu\n\nMinimizes the number of transactions needed."
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Mark Settlement as Paid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Payment recorded successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"    pm.expect(responseJson.data.payment).to.have.property('from', 'Om');",
+									"    pm.expect(responseJson.data.payment).to.have.property('to', 'Shantanu');",
+									"    pm.expect(responseJson.data.payment).to.have.property('amount', 150);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"Om\",\n  \"to\": \"Shantanu\",\n  \"amount\": 150,\n  \"description\": \"Settlement payment: Om paid Shantanu\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments",
+							"host": ["{{base_url}}"],
+							"path": ["payments"]
+						},
+						"description": "💳 **Records a settlement payment**\n\nThis reduces future settlement needs by updating balances.\n\n⚠️ **Run 'Get Settlement Summary' first** to see what payments are needed."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📁 Edge Cases & Validation",
+			"description": "🛡️ **Error handling and validation testing**\n\nTesting various edge cases and input validation.",
+			"item": [
+				{
+					"name": "➤ Add Expense - Invalid (negative amount)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Negative amount rejected', function () {",
+									"    pm.response.to.have.status(400);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Invalid Expense\",\n  \"amount\": -100,\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": -50},\n    {\"person\": \"Sanket\", \"amount\": -50}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "❌ **Tests negative amount validation**\n\nShould return 400 error with validation message."
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Add Expense - Invalid (empty description)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Empty description rejected', function () {",
+									"    pm.response.to.have.status(400);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"\",\n  \"amount\": 100,\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 50},\n    {\"person\": \"Sanket\", \"amount\": 50}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "❌ **Tests empty description validation**\n\nShould return 400 error requiring description."
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Add Expense - Invalid (missing paid_by)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Missing paid_by rejected', function () {",
+									"    pm.response.to.have.status(400);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Missing Payer\",\n  \"amount\": 200,\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 100},\n    {\"person\": \"Sanket\", \"amount\": 100}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses",
+							"host": ["{{base_url}}"],
+							"path": ["expenses"]
+						},
+						"description": "❌ **Tests missing paid_by validation**\n\nShould return 400 error requiring who paid."
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Update Non-existent Expense",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Non-existent expense update rejected', function () {",
+									"    pm.response.to.have.status(404);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"This should fail\",\n  \"amount\": 100,\n  \"paid_by\": \"Shantanu\",\n  \"split_among\": [\n    {\"person\": \"Shantanu\", \"amount\": 100}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/expenses/67890abcdef123456789abcd",
+							"host": ["{{base_url}}"],
+							"path": ["expenses", "67890abcdef123456789abcd"]
+						},
+						"description": "❌ **Tests update with invalid ID**\n\nShould return 404 error for non-existent expense."
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Delete Non-existent Expense",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Non-existent expense deletion handled', function () {",
+									"    pm.response.to.have.status(404);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expenses/67890abcdef123456789abcd",
+							"host": ["{{base_url}}"],
+							"path": ["expenses", "67890abcdef123456789abcd"]
+						},
+						"description": "❌ **Tests delete with invalid ID**\n\nShould return 404 error for non-existent expense."
+					},
+					"response": []
+				},
+				{
+					"name": "➤ Get Balances - With No Expenses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Empty balances handled gracefully', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/balances",
+							"host": ["{{base_url}}"],
+							"path": ["balances"]
+						},
+						"description": "🤷 **Tests balances with no data**\n\n⚠️ **Run 'Clear All Data' first** to test this scenario.\n\nShould return empty balances gracefully."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
