@@ -201,15 +201,24 @@ function updateQuickBalance() {
     let balanceHtml = '';
     Object.keys(balances).forEach(person => {
         const personBalance = balances[person];
-        if (personBalance && Math.abs(personBalance.balance) > 0.01) {
+        if (personBalance) {
             const isPositive = personBalance.balance > 0;
+            const isZero = Math.abs(personBalance.balance) < 0.01;
+            
+            // Format the balance display like: Shantanu: +₹150 (paid ₹600, owes ₹450)
             balanceHtml += `
-                <div class="balance-item ${isPositive ? 'positive' : 'negative'}">
-                    <h4>${person}</h4>
-                    <div class="balance-amount">
-                        ${isPositive ? '+' : '-'}₹${Math.abs(personBalance.balance).toFixed(2)}
+                <div class="balance-item ${isPositive ? 'positive' : isZero ? 'zero' : 'negative'}">
+                    <div class="balance-header">
+                        <h4>${person}</h4>
+                        <div class="balance-amount">
+                            ${isZero ? '₹0.00' : (isPositive ? '+' : '')}${isZero ? '' : '₹' + personBalance.balance.toFixed(2)}
+                        </div>
                     </div>
-                    <small>${isPositive ? 'is owed' : 'owes'}</small>
+                    <div class="balance-details">
+                        ${isZero ? 'settled' : (isPositive ? 'is owed by others' : 'owes to others')}
+                        <br>
+                        <small>Paid: ₹${personBalance.total_paid.toFixed(2)} | Share: ₹${personBalance.total_share.toFixed(2)}</small>
+                    </div>
                 </div>
             `;
         }
@@ -381,7 +390,7 @@ async function loadBalances() {
     }
 }
 
-// Update balances list
+// Update balances list  
 function updateBalancesList() {
     const container = document.getElementById('balance-list');
     
@@ -393,16 +402,22 @@ function updateBalancesList() {
     let balanceHtml = '';
     Object.keys(balances).forEach(person => {
         const personBalance = balances[person];
-        if (personBalance && Math.abs(personBalance.balance) > 0.01) {
+        if (personBalance) {
             const isPositive = personBalance.balance > 0;
+            const isZero = Math.abs(personBalance.balance) < 0.01;
+            
             balanceHtml += `
-                <div class="balance-item ${isPositive ? 'positive' : 'negative'}">
-                    <h4>${person}</h4>
-                    <div class="balance-amount">
-                        ${isPositive ? '+' : '-'}₹${Math.abs(personBalance.balance).toFixed(2)}
+                <div class="balance-item ${isPositive ? 'positive' : isZero ? 'zero' : 'negative'}">
+                    <div class="balance-header">
+                        <h4>${person}</h4>
+                        <div class="balance-amount">
+                            ${isZero ? '₹0.00' : (isPositive ? '+' : '')}${isZero ? '' : '₹' + personBalance.balance.toFixed(2)}
+                        </div>
                     </div>
-                    <p>${isPositive ? 'is owed by others' : 'owes to others'}</p>
-                    <small>Paid: ₹${personBalance.total_paid.toFixed(2)} | Share: ₹${personBalance.total_share.toFixed(2)}</small>
+                    <div class="balance-details">
+                        <p>${isZero ? 'settled' : (isPositive ? 'is owed by others' : 'owes to others')}</p>
+                        <small>Paid: ₹${personBalance.total_paid.toFixed(2)} | Share: ₹${personBalance.total_share.toFixed(2)}</small>
+                    </div>
                 </div>
             `;
         }

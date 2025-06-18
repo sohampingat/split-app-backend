@@ -246,6 +246,11 @@ body {
     background: #fff8f8;
 }
 
+.balance-item.zero {
+    border-left-color: #6c757d;
+    background: #f8f9fa;
+}
+
 .balance-item h4, .expense-item h4 {
     color: #333;
     margin-bottom: 5px;
@@ -262,6 +267,27 @@ body {
 
 .negative .balance-amount {
     color: #dc3545;
+}
+
+.zero .balance-amount {
+    color: #6c757d;
+}
+
+.balance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.balance-details {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.balance-details small {
+    color: #888;
+    font-size: 0.8rem;
 }
 
 .expense-details {
