@@ -449,15 +449,19 @@ async function markSettlementAsPaid(from, to, amount) {
         const result = await apiCall('/payments', 'POST', paymentData);
         
         if (result.success) {
+            console.log(`💰 Payment recorded successfully: ${from} → ${to}: ₹${amount}`);
             showNotification(`✅ Payment recorded: ${from} paid ₹${amount.toFixed(2)} to ${to}!`);
             
-            // Refresh dashboard data to show updated balances and settlements
+            // Refresh ALL data to ensure everything is updated
+            console.log('🔄 Refreshing dashboard data...');
             await loadDashboardData();
             
-            // If we're on the balances tab, refresh that too
-            if (document.getElementById('balances').classList.contains('active')) {
-                await loadBalances();
-            }
+            // Also refresh specific components that might be visible
+            console.log('🔄 Refreshing all components...');
+            await refreshAllComponents();
+            
+            console.log('✅ All data refreshed after payment');
+            
         } else {
             throw new Error(result.message || 'Failed to record payment');
         }
@@ -473,6 +477,38 @@ async function markSettlementAsPaid(from, to, amount) {
 async function refreshExpenses() {
     await loadAllExpenses();
     showNotification('Expenses refreshed!');
+}
+
+// Refresh all components after a payment
+async function refreshAllComponents() {
+    try {
+        // Check which tabs are currently active and refresh accordingly
+        if (document.getElementById('balances').classList.contains('active')) {
+            await loadBalances();
+        }
+        
+        if (document.getElementById('expenses').classList.contains('active')) {
+            await loadAllExpenses();
+        }
+        
+        // Note: Payment tab refresh would go here if needed
+        
+        // Always refresh dashboard stats (visible on all pages)
+        const balanceData = await apiCall('/balances');
+        if (balanceData.success) {
+            balances = balanceData.data || {};
+            updateQuickBalance();
+        }
+        
+        const settlementsData = await apiCall('/settlements');
+        if (settlementsData.success) {
+            settlements = settlementsData.data || [];
+            updateSettlementSuggestions();
+        }
+        
+    } catch (error) {
+        console.error('Error refreshing components:', error);
+    }
 }
 
 // Toggle between equal and custom split inputs

@@ -307,19 +307,14 @@ app.get('/balances', (req, res) => {
     });
     
     // Apply completed payments to balances (same logic as settlements)
-    console.log('🧮 Applying', payments.length, 'payments to balances...');
     payments.forEach(payment => {
       const normalizedFrom = normalizeName(payment.from);
       const normalizedTo = normalizeName(payment.to);
       
-      console.log(`💰 Payment: ${payment.from} → ${payment.to}: ₹${payment.amount}`);
-      
       if (balances[normalizedFrom]) {
-        console.log(`  ${normalizedFrom} balance: ${balances[normalizedFrom].balance} → ${balances[normalizedFrom].balance + payment.amount}`);
         balances[normalizedFrom].balance += payment.amount; // Reduce debt
       }
       if (balances[normalizedTo]) {
-        console.log(`  ${normalizedTo} balance: ${balances[normalizedTo].balance} → ${balances[normalizedTo].balance - payment.amount}`);
         balances[normalizedTo].balance -= payment.amount; // Reduce what they're owed
       }
     });
