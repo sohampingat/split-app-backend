@@ -2,7 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const app = require("./app-clean");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Connect to MongoDB and start server
 mongoose.connect(process.env.MONGO_URI, {

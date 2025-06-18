@@ -2,7 +2,7 @@
   "name": "split-app-backend",
   "version": "1.0.0",
   "description": "Backend system for splitting expenses among groups of people - like Splitwise",
-  "main": "server-test.js",
+  "main": "server-unified.js",
   "keywords": [
     "expense",
     "split",
@@ -13,8 +13,8 @@
   "author": "Split App Developer",
   "license": "MIT",
   "scripts": {
-    "start": "node server-test.js",
-    "dev": "nodemon server-test.js",
+    "start": "node server-unified.js",
+    "dev": "nodemon server-unified.js",
     "build": "echo 'No build step required'"
   },
   "dependencies": {

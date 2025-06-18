@@ -290,11 +290,113 @@ body {
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.settlement-item p {
+.settlement-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.settlement-info p {
     margin: 0;
     color: #856404;
+    font-weight: 500;
+}
+
+.settlement-actions {
+    flex-shrink: 0;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #667eea;
+    color: white;
+}
+
+.btn-small:hover {
+    background: #5a67d8;
+    transform: translateY(-1px);
+}
+
+.btn-small:active {
+    transform: translateY(0);
+}
+
+/* Custom Split Styles */
+.custom-split-row {
+    margin-bottom: 10px;
+}
+
+.split-row-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.split-person, .split-amount {
+    flex: 1;
+    min-width: 120px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.split-person {
+    min-width: 140px;
+}
+
+.split-amount {
+    min-width: 100px;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+#custom-split-inputs small {
+    display: block;
+    margin-bottom: 10px;
+    color: #666;
+    font-style: italic;
 }
 
 /* Expenses Header */

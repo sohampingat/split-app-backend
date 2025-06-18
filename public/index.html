@@ -104,10 +104,26 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="split_type">Split Type</label>
+                        <select id="split_type" name="split_type" onchange="toggleSplitInput()">
+                            <option value="equal">Equal Split</option>
+                            <option value="custom">Custom Split</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="equal-split-section">
                         <label for="split_among">Split Among (comma-separated)</label>
                         <input type="text" id="split_among" name="split_among" required 
                                placeholder="e.g., John, Sarah, Mike">
                         <small>Enter names separated by commas</small>
+                    </div>
+
+                    <div class="form-group" id="custom-split-section" style="display: none;">
+                        <label>Custom Split</label>
+                        <div id="custom-split-inputs">
+                            <small>Enter person name and their share amount</small>
+                        </div>
+                        <button type="button" class="btn-secondary btn-small" onclick="addCustomSplitRow()">+ Add Person</button>
                     </div>
 
                     <div class="form-group">

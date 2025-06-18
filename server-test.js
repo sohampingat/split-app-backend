@@ -18,11 +18,17 @@ let idCounter = 1;
 let paymentIdCounter = 1;
 
 // Helper functions
+function normalizeName(name) {
+  if (!name || typeof name !== 'string') return name;
+  // Trim whitespace and convert to proper case (first letter uppercase, rest lowercase)
+  return name.trim().toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+}
+
 function getAllPeople() {
   const peopleSet = new Set();
   expenses.forEach(expense => {
-    peopleSet.add(expense.paid_by);
-    expense.split_among.forEach(split => peopleSet.add(split.person));
+    peopleSet.add(normalizeName(expense.paid_by));
+    expense.split_among.forEach(split => peopleSet.add(normalizeName(split.person)));
   });
   return Array.from(peopleSet);
 }
@@ -30,12 +36,13 @@ function getAllPeople() {
 function calculatePersonBalance(personName) {
   let totalPaid = 0;
   let totalShare = 0;
+  const normalizedPersonName = normalizeName(personName);
   
   expenses.forEach(expense => {
-    if (expense.paid_by === personName) {
+    if (normalizeName(expense.paid_by) === normalizedPersonName) {
       totalPaid += expense.amount;
     }
-    const personSplit = expense.split_among.find(split => split.person === personName);
+    const personSplit = expense.split_among.find(split => normalizeName(split.person) === normalizedPersonName);
     if (personSplit) {
       totalShare += personSplit.share;
     }
@@ -59,11 +66,14 @@ function calculateSettlements() {
   
   // Apply completed payments to balances
   payments.forEach(payment => {
-    if (balances[payment.from] !== undefined) {
-      balances[payment.from] += payment.amount; // Reduce debt
+    const normalizedFrom = normalizeName(payment.from);
+    const normalizedTo = normalizeName(payment.to);
+    
+    if (balances[normalizedFrom] !== undefined) {
+      balances[normalizedFrom] += payment.amount; // Reduce debt
     }
-    if (balances[payment.to] !== undefined) {
-      balances[payment.to] -= payment.amount; // Reduce what they're owed
+    if (balances[normalizedTo] !== undefined) {
+      balances[normalizedTo] -= payment.amount; // Reduce what they're owed
     }
   });
   
@@ -225,8 +235,11 @@ app.post('/expenses', (req, res) => {
       id: idCounter++,
       amount: Number(amount),
       description: description.trim(),
-      paid_by: paid_by.trim(),
-      split_among: finalSplitAmong,
+      paid_by: normalizeName(paid_by.trim()),
+      split_among: finalSplitAmong.map(split => ({
+        person: normalizeName(split.person),
+        share: split.share
+      })),
       split_type: split_type,
       split_details: split_type !== 'equal' ? split_details : null,
       category: req.body.category || 'General',
@@ -424,10 +437,10 @@ app.post('/payments', (req, res) => {
     
     const payment = {
       id: paymentIdCounter++,
-      from: from.trim(),
-      to: to.trim(),
+      from: normalizeName(from.trim()),
+      to: normalizeName(to.trim()),
       amount: Number(amount),
-      description: description ? description.trim() : `Payment from ${from} to ${to}`,
+      description: description ? description.trim() : `Payment from ${normalizeName(from)} to ${normalizeName(to)}`,
       date: new Date(),
       createdAt: new Date()
     };
@@ -541,7 +554,89 @@ app.post('/settlements/:settlementId/pay', (req, res) => {
   }
 });
 
-// Error handling
+// Reset data endpoint for testing
+app.post('/reset-data', (req, res) => {
+  expenses = [];
+  payments = [];
+  idCounter = 1;
+  paymentIdCounter = 1;
+  
+  res.json({
+    success: true,
+    message: 'All data reset successfully'
+  });
+});
+
+// Add clean test data endpoint
+app.post('/add-test-data', (req, res) => {
+  // Reset first
+  expenses = [];
+  payments = [];
+  idCounter = 1;
+  paymentIdCounter = 1;
+  
+  // Add clean test expenses with consistent names
+  const testExpenses = [
+    {
+      id: idCounter++,
+      amount: 600,
+      description: "Dinner at restaurant",
+      paid_by: "Shantanu",
+      split_among: [
+        { person: "Shantanu", share: 200 },
+        { person: "Sanket", share: 200 },
+        { person: "Om", share: 200 }
+      ],
+      split_type: "equal",
+      category: "Food",
+      date: new Date("2024-01-15"),
+      createdAt: new Date("2024-01-15")
+    },
+    {
+      id: idCounter++,
+      amount: 450,
+      description: "Groceries",
+      paid_by: "Sanket", 
+      split_among: [
+        { person: "Shantanu", share: 150 },
+        { person: "Sanket", share: 150 },
+        { person: "Om", share: 150 }
+      ],
+      split_type: "equal",
+      category: "Food",
+      date: new Date("2024-01-16"),
+      createdAt: new Date("2024-01-16")
+    },
+    {
+      id: idCounter++,
+      amount: 300,
+      description: "Petrol",
+      paid_by: "Om",
+      split_among: [
+        { person: "Shantanu", share: 100 },
+        { person: "Sanket", share: 100 },
+        { person: "Om", share: 100 }
+      ],
+      split_type: "equal", 
+      category: "Transport",
+      date: new Date("2024-01-17"),
+      createdAt: new Date("2024-01-17")
+    }
+  ];
+  
+  expenses.push(...testExpenses);
+  
+  res.json({
+    success: true,
+    data: {
+      expenses_added: testExpenses.length,
+      expenses: testExpenses
+    },
+    message: 'Clean test data added successfully'
+  });
+});
+
+// Error handling - must be last
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
@@ -559,59 +654,7 @@ app.listen(PORT, () => {
   console.log(`💡 Using in-memory storage for testing`);
 });
 
-// Add sample data
-setTimeout(() => {
-  console.log('\n📝 Adding sample expenses...');
-  
-  // Sample expenses as per assignment requirements
-  const sampleExpenses = [
-    {
-      amount: 600,
-      description: "Dinner at restaurant",
-      paid_by: "Shantanu",
-      split_among: ["Shantanu", "Sanket", "Om"]
-    },
-    {
-      amount: 450,
-      description: "Groceries",
-      paid_by: "Sanket",
-      split_among: ["Shantanu", "Sanket", "Om"]
-    },
-    {
-      amount: 300,
-      description: "Petrol",
-      paid_by: "Om",
-      split_among: ["Shantanu", "Sanket", "Om"]
-    },
-    {
-      amount: 500,
-      description: "Movie Tickets",
-      paid_by: "Shantanu",
-      split_among: ["Shantanu", "Sanket", "Om"]
-    }
-  ];
-  
-  sampleExpenses.forEach((expenseData, index) => {
-    const people = expenseData.split_among;
-    const sharePerPerson = expenseData.amount / people.length;
-    
-    const expense = {
-      id: idCounter++,
-      amount: expenseData.amount,
-      description: expenseData.description,
-      paid_by: expenseData.paid_by,
-      split_among: people.map(person => ({
-        person,
-        share: Math.round(sharePerPerson * 100) / 100
-      })),
-      category: 'General',
-      date: new Date(Date.now() - (3 - index) * 24 * 60 * 60 * 1000), // Spread over days
-      createdAt: new Date(Date.now() - (3 - index) * 24 * 60 * 60 * 1000)
-    };
-    
-    expenses.push(expense);
-  });
-  
-  console.log(`✅ Added ${sampleExpenses.length} sample expenses`);
-  console.log('🔍 Test the API at http://localhost:3000/expenses');
-}, 1000);
+// Add sample data - commented out for manual testing
+// Use /add-test-data endpoint instead for clean data
+console.log('💡 Server ready! Use /add-test-data endpoint to add clean test data');
+console.log('🌐 Web interface: http://localhost:3000/professional.html');

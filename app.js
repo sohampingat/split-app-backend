@@ -29,7 +29,7 @@ app.use(limiter);
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://your-frontend-domain.com'] 
-    : ['http://localhost:3000', 'http://localhost:3001'],
+    : ['http://localhost:3001'],
   credentials: true
 };
 app.use(cors(corsOptions));
